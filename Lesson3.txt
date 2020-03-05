@@ -1,0 +1,336 @@
+vi[m] Editor & Linux Networking
+Objectives
+ Learn about using the root account
+ Understand the difference between su and sudo
+ Learning how to use vi and vim
+ Learning vim shortcuts
+ Learn how to use the networking commands in Linux
+ Learn how to configure networks
+
+
+
+
+                                                     2
+Why use a CLI Editor?
+Imagine having to remotely administer a server and you have to edit
+configuraiton files, how would you do it?
+
+  You could use SFTP to download the file and upload the modified
+  file
+    However that would be inefficient
+  Instead we can edit files right from the terminal using a CLI editor
+    This lets you edit serverside files in real time
+
+
+
+                                                                         3
+Why use a CLI Editor? (Continued)
+Other reasons to use a CLI editor can include:
+
+  Security: imagine making local copies of sensitive informaiton like
+  hashed passwords?
+  Missing file permissions: sometimes you won't have the ability to
+  edit files unless you use root
+    Usually you never want to use root to log in remotely
+    You'll want to prevent root authentication as its a guaranteed
+    account on your system
+
+                                                                        4
+What precautions should I take with the root
+account?
+ The root user can do anything on Linux
+ Disable root access remotely
+   Most Linux servers are constantly under attack to compromise
+   the root user since it always exists
+ Never execute programs you can't completely trust as root
+   I could code a malicious program to install a backdoor that would
+   be hard to detect
+ Even on Linux it can be difficult to remove all backdoors that may
+ have been planted                                                     5
+How can we use the root account remotely if we
+need to?
+ There's a couple of options to using root if you log in with an
+ unprivileged user
+    su- the switch user command will let you change to any user,
+   with no argument su default to switching to root
+    sudo command   - the super user do command runs the command as
+   root however there are some limitations like output redirection
+   will still be based on the original user
+
+
+                                                                     6
+vi editor
+ The vi editor always comes preinstalled on Linux systems
+ vi is similar to notepad but for a terminal
+ vi can be used to create and edit basic text files
+   config files
+   scripts
+ Now what is one of the key things missing in notepad and vi?
+   Syntax highlighting!!
+
+
+
+                                                                7
+vim vs vi
+ vim stands for vi improved
+ vim comes with several additional features
+   syntax highlighting
+   multilevel undo and redo
+   plugin support
+   screenspliting
+
+
+
+
+                                              8
+Characteristics of vim
+ The vim editor:
+   is very powerful and efficient
+   has a great deal of shortcuts
+   supports regex
+   can be very confusing to a beginner
+ vi commands are CASE SENSITIVE!
+ The best way to learn vi commands is to use them
+
+
+
+                                                    9
+Using vim
+First we have to open a file:
+
+vim [filename]
+
+
+
+  After pressing enter the command prompt will disappear and the
+  the vim editor will open
+  You will see a ~ (tilde) on blank lines
+
+
+
+
+                                                                   10
+vim modes
+There are 2 vim modes
+
+  Command (normal) Mode
+    Enter vim commands or shortcuts to accomplish tasks
+  Input Mode
+    Allows the user to edit the file, input and delete characters
+    You can be in Insert or Replace
+      Insert allows to to add additional characters at the cursor
+      Replace will overwrite the characters at the cursor as you
+      type                                                          11
+Changing vim modes
+From command mode to enter input mode press:
+
+  i - to insert at cursor
+  I - to insert at the beginning of the line
+  a - to append after the cursor
+  A - to append at the end of the line
+  R - to replace at the cursor
+
+From an input mode to enter command mode pres the Esc key
+
+  Pressing the Esc key while in command mode won't do anything   12
+Moving the cursor
+While in the command mode use the following keys to move the
+cursor:
+
+  h - left
+  j - down
+  k - up
+  l - right
+
+Do the arrow keys work?
+
+  Usually ... depending on you configuration
+                                                               13
+Saving and Quitting in vim
+While in command mode type the following commands:
+
+  :w    - to save to current fple
+  :w {filename}     - to save to a diferent file while keeping this file
+  open
+  :sav {filename}       - to save as a new file and open that file
+  :q    - to quit vim
+  :wq    - to save changes and quit vim
+  :q!    - to quit without saving changes
+  :close    - to close the current pane
+                                                                           14
+Moving around a file efficiently
+To traverse text you can use:
+
+  $ - go to the end of the line
+  ^ – go to the first non-blank character of the line
+  0 – go to the beginning of the line
+  g_ – jump to the last non-blank character of the line
+  gg – to go to the first line of the document
+  G – to go to the last line of the document
+  <enter> - go to the beginning of the next line
+                                                          15
+Moving around a file efficiently (Continued)
+word = groups of characters divided by special characters or spaces
+WORD = groups of characters divided by white space only
+
+  w – go to the start of the next word
+  W – go to the start of the next WORD
+  b - go to the start of the previous word
+  B - go to the start of the previous WORD
+  e – go to the end of the next word
+  E – go to the end of the next WORD
+
+                                                                      16
+Searching in vim
+ f{character} - find a character (eg. fa find the next a)
+ F{character} - find a character backwards
+ /{characters} - search the file for a group of characters (eg. /Linux)
+   To find the next occurance just use / by itself
+   Please note this supports regex searching
+ % - go to the matching character (eg. closing bracket)
+   Supported characters: () [] {}
+
+
+
+                                                                          17
+Editing from command mode and undo/redo
+  r{character} - replace the character at the cursor with {character}
+  x - delete the character at the cursor
+
+To undo an edit
+
+  u - undo the last edit
+  Ctrl + r - redo last edit
+
+
+
+
+                                                                        18
+Cut, Copy and Paste in vim
+ yy – yank (copy) a line
+ 2yy – yank (copy) 2 lines
+ yw – yank the characters of a word to the start of the next word
+ y$ - yank to the end of the line
+ p – put (paste) the clipboard after the cursor
+ P – put (paste) before the cursor
+ dd – delete (cut) a line
+ 2dd – delete (cut) 2 lines
+ d$ - delete to the end of the line
+                                                                    19
+Additional Resources on vim
+ http://vimgenius.com/lessons/vim-intro
+ https://vim-adventures.com/
+ https://vim.rtorr.com/
+
+
+
+
+                                          20
+Configuring sudo
+Now that we know how to use a CLI editor we can configure sudo
+
+  The configuration data is stored in /etc/sudoers
+    This file should never be directly edited
+    Instead we use a command called visudo
+  A full sudoer configuration is beyond the scope of this course
+  however to add an individual user you can add the line
+
+franco   ALL=(ALL)   ALL
+
+
+
+  By default on CentOS the group wheel has sudo access (more on    21
+Networking in Linux
+
+
+
+
+                      22
+Networking basics
+Using the ip command
+To check your current ip address:
+
+ip addr show
+
+
+
+All options of ip can be shortened
+ip a is like ip address show
+
+To bring a link up or down:
+
+ip link set {device} {up|down}
+                                     23
+Networking basics (continued)
+To assign an ip address:
+
+ip addr add {ip/prefix} dev {device}
+
+
+
+ip addr add 192.168.1.23/24 dev ens33
+
+
+
+To remove an ip address:
+
+ip addr del {ip/prefix} dev {device}
+
+
+
+ip addr del 192.168.1.23/24 dev ens33   24
+Networking basics (continued)
+Add an ip route:
+
+ip route add {network/prefix} via {ip} dev {device}
+
+
+
+Add the default route:
+
+ip route add default via {ip}
+
+
+
+Run DHCP client on a device:
+
+dhclient {device}
+                                                      25
+Device Naming
+ Historically all ethernet was called eth0, eth1 and so on
+ Wireless was called wlan0, wlan1, and so on
+ Now with RHEL based distributions
+   Onboard nics are eno{#}
+   PCI Express hot plug nics are ens{#}
+   For PCI slot with an index number on the adapter
+   enp{PCI slot}s{card index no}
+   If firmware is invalid the traditional eth{#}
+
+                                                             26
+Having DHCP on boot
+To configure DHCP on boot from command line you have to edit a
+configuration file:
+
+  /etc/sysconfig/network-scripts/ifcfg-{device}
+    device will be the device you wish to have DHCP operating on
+    from boot
+  The BOOTPROTO should be dhcp
+  The ONBOOT should be yes
+
+BOOTPROTO=dhcp
+...
+ONBOOT=yes                                                         27
+What about DNS?
+ DNS servers will be added from DHCP to /etc/resolv.conf
+ If you need to add static DNS entries they should be added to
+ /etc/hosts
+   For example localhost:
+
+  127.0.0.1 localhost
+  127.0.0.1 mydomain.com
+
+
+
+
+                                                                 28
+

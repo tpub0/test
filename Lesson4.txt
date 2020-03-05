@@ -1,0 +1,537 @@
+File Systems
+Objectives
+ Learn what a file system is
+ Learn which file systems are compatible with Linux
+ Learn about the Linux Directory struture
+ Learn about Links
+ Learn about RAID and data redundancy
+
+
+
+
+                                                      2
+What is a file system?
+A file system is an abstract system to organize data.
+
+  Can be thought of as a file cabinet
+  The entire filing cabinet is the hard drive
+  Each drawer is folder
+  Each file is like a computer file
+
+
+
+
+                                                        3
+What makes up a file system?
+ The file system has multiple layers stemming from the kernel
+ Inside the Linux Kernel there is a Virtual File System (VFS)
+   Within the VFS multiple destinations can be mounted including:
+      Physical drives
+      Network drives/locations
+      Portable media
+ This VFS provides a common interface abstraction for file systems
+
+
+
+                                                                     4
+How does the VFS work?
+
+
+
+
+                         5
+How does VFS work? (continued)
+ When a program interfaces with the VFS it uses common functions
+ like open , close , or write
+ The functions are then implemented at a driver level each driver
+ may vary
+   An HDD will physically spin the text
+   A network protocol like WEBDAV will use HTTP GET and PUT
+   requests
+   A USB drive will use the USB drivers to connect to the USB
+   device
+
+                                                                    6
+Common Linux Filesystems
+ ext3 — Third Extended Filesystem
+   ext2 system with journaling support
+   Well tested, extremely stable.
+ ext4 — Fourth Extended Filesystem
+   compatible with ext2 and ext3.
+   Partitions up to 1 Exabyte (1,048,576 terabytes)
+   Files sizes up to 16 terabytes.
+   Online defragmentation.
+   Default filesystem on RHEL 7/CentOS 7
+                                                      7
+Other File Systems
+ Btrfs — Also known as "Better FS“
+ exFAT — For flash drives
+   Also fat, fat32, NTFS for Ms compatibility
+ JFS — IBM's Journaled File System
+ ReiserFS Hans Reiser's high-performance FS
+ XFS — Silicon Graphic’s FS
+   very fast throughput on large files
+ ZFS —Sun Microsystem’s FS.
+
+                                                8
+What is journaling?
+ Keeps track of data written to FS
+   Writes to a journal before writing file to disk
+   If a power fails during file save
+     Save will not complete
+     File can be reconstructed from journal entry
+ More reliable
+   Prevents inconsistency
+ Much faster at file system checks
+
+                                                     9
+EXT4 Features
+ Improved timestamps
+   Measures timestamps on files to the nanosecond
+ During a write to the medium, ext4 reserves the space beforehand
+ in order to increase the likelihood of the data being contiguous on
+ the medium
+ This is done for mission-critical applications not to mistakenly
+ overwrite objects
+
+
+
+
+                                                                       10
+Buffer Cache
+ Keeps track of read and write requests from the individual file
+ systems and the physical devices
+ Maintains a cache of requests to avoid having to go back out to the
+ physical device for all requests.
+ Most-recently used buffers (pages) are cached here and can be
+ quickly provided back to the individual file systems
+
+
+
+
+                                                                       11
+Device Drivers
+ Device Drivers are what handle the transition from computer
+ instructions to device instructions
+ In Linux environments, programmers can build device drivers
+ either as parts of the kernel or separately as loadable modules.
+   Drivers can be dynamically unloaded and loaded during runtime
+
+
+
+
+                                                                    12
+/etc/fstab
+ fstab is where all mount point information is stored for devices to
+ be mounted on boot
+
+{location} {mount point} {mount type} {options} {fs freq} {fs passno}
+
+
+
+UUID=02e1c00a-99f8-485f-b640-3e34ba63f021 /       xfs     defaults      0 0
+UUID=68c2322b-a31c-40c1-a546-ecc82699a766 /boot   xfs     defaults      0 0
+UUID=2eab64da-2d60-4a3e-ae5f-977444a36c87 swap    swap    defaults      0 0
+
+
+
+
+                                                                              13
+Command: df
+Format: df [options] [file]...
+
+  df is used to view the free disk space of a mounted drive
+  It can also be used to quickly view which drives are currently
+  mounted
+
+[root@fiacobacci ~]# df -h
+Filesystem            Size   Used Avail Use% Mounted on
+/dev/sda2              41G   1.8G   40G   5% /
+devtmpfs              1.9G      0 1.9G    0% /dev
+tmpfs                 1.9G      0 1.9G    0% /dev/shm
+tmpfs                 1.9G   8.7M 1.9G    1% /run
+tmpfs                 1.9G      0 1.9G    0% /sys/fs/cgroup
+/dev/sda1            1014M   135M 880M 14% /boot
+tmpfs                 378M      0 378M    0% /run/user/0           14
+Linux File Structure
+
+
+
+
+                       15
+Linux File Stucture Layout
+/
+├──   bin
+├──   boot
+├──   dev
+├──   etc
+├──   home
+├──   lib
+├──   media
+├──   mnt
+├──   opt
+├──   proc
+├──   root
+├──   sbin
+├──   sys
+├──   tmp
+├──   usr
+├──   var
+
+                             16
+/ - The Root Directory
+ Not to be confused with /root (root’s homedir more on this later)
+ The starting point of your directory structure.
+   But where is the C: drive?
+   Every other file and directory on your system is under the root
+   directory.
+   Usually contains only subdirectories,
+ Only 1 root filesystem allowed
+   What if I have 2 drives?
+   Where does the D: drive go?
+                                                                     17
+/boot/ Directory
+ Contains Boot Loader Files
+   Usually a separate disk partition
+ Contains the Grub Bootloader
+   (Recall) GRand Unified Bootloader
+ Contains the Linux Kernel
+   File: vmlinuz-{version}-{arch}
+
+
+
+
+                                       18
+/etc/ Directory
+ The etc directory is the default location for configuration files
+ /etc/passwd (file)
+   Contains various pieces of information for each user account
+ /etc/shadow (file)
+   Stores user passwords in encrypted format
+   Works with /etc/passwd to define user accounts
+ /etc/fstab (file)
+   A file containing drive mount points
+
+                                                                     19
+/etc/fstab
+Example of fstab:
+
+#
+# /etc/fstab
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk'
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
+#
+UUID=02e1c00a-99f8-485f-b640-3e34ba63f021 /         xfs     defaults        0 0
+UUID=68c2322b-a31c-40c1-a546-ecc82699a766 /boot     xfs     defaults        0 0
+UUID=2eab64da-2d60-4a3e-ae5f-977444a36c87 swap      swap    defaults        0 0
+
+
+
+
+                                                                                  20
+/usr Directory
+ usr = Unix System Resources
+   /usr/bin - Contains Programs (binaries, hence the directory
+   name bin) for all users
+     Ex: shells, ls, grep, top
+   /usr/sbin - Contains Programs for the super user (thus sbin =
+   super user binaries)
+     Ex: shutdown, fdisk, reboot
+   /usr/lib - Contains the shared libraries for programs that are
+   dynamically linked
+     Similar to DLLs in Windows except they are shared.             21
+/home Directory
+ The default location for user home directories
+   Every user has their own directory
+   Only place where normal users are allowed to write files
+   Permissions are setup in a way users can't see other users files
+   (more on this later)
+   Linux has the potential for "quotas" to be enforced for each user
+   if required
+   Similar to C:/Users/ on Windows
+
+
+                                                                       22
+/root Directory
+ Not to be confused with / (The root directory)
+ This is root's home directory
+ root is the administrator or super user on unix systems
+ A good directory to store administrative details and scripts for
+ administering the system
+
+
+
+
+                                                                    23
+/var Directory
+ For files that vary in size while the system is running
+   /var/log (directory)
+      This is where Linux puts all its log files
+      If something goes wrong, check here first
+   /var/mail (directory)
+      Incoming and outgoing mail is stored in this directory
+   /var/spool (directory)
+      This directory holds files that are queued for some process,
+      like printing
+                                                                     24
+/dev Directory
+ Everything is a file including devices
+   /dev contains devices that appear to be files
+   For example,
+      /dev/cdrom is the CD drive
+      /dev/sda is the first SATA hard drive
+      /dev/sda1 is the first partition on the first SATA drive
+ All the devices that Linux kernel have found during the boot
+ process are located under /dev
+ Note: some devices like USB controllers create additional devices
+ at run time                                                         25
+/proc Directory
+ Contains information regarding running processes, not real "files"
+   These are created by the kernel and contain kernel information
+   Numbered entries correspond to all processes running on the
+   system
+      For example: /proc/1 is your init system
+ Entries can be viewed using file tools
+   Example: cat /proc/cpuinfo shown CPU info
+   Some parameters can be changed using vi or with bash
+   redirection
+                                                                      26
+/lost+found Directory
+ A place for files that get restored after a system crash or file-
+ system errors
+   The fsck (file-system check) program is invoked at boot time
+      It may find an inconsistent file-system and repair it
+      File fragments or orphaned filed are placed in lost+found
+ Allows recovery of files that otherwise would be lost.
+
+
+
+
+                                                                     27
+Relative vs Absolute Path
+ An absolute path will always start with a / and there for is located
+ starting from the root directory
+   /home is a directory named home in /
+ A relative path will not have a slash and location is based on the
+ current working directory (determined by command PWD)
+   bin/users will be located in the current working directory in a
+   folder called bin then the object is users , this is case users could
+   be a file or a folder
+
+
+                                                                           28
+Links
+
+
+
+
+        29
+Links: Symbolic Link
+ This is a pointer to a file or folder from another file or folder
+   Windows called theirs “Shortcuts”
+   Actually a small file with a path to another file
+   Can be a link to a file or directory
+ A symbolic link can cross file systems and storage mediums
+ Symbolic link target file/directory does not have to exist when link is
+ created
+   Target can be moved or deleted, symbolic link will not be changed
+   Accessing a symbolic link when the target does not exist will
+   produce an error message                                                30
+Links: Symbolic Link - Example
+Usage:
+
+[root@www~]# ln –s {source} {dest}
+
+
+
+Examples:
+
+#Creates myShortcut2etc in current directory
+[root@www~]# ln –s /etc/ myShortcut2etc
+
+
+
+#Creates a link to /usr/lib at /lib
+[root@www~]# ln –s /usr/lib/ /lib/
+
+                                               31
+Links: Hard Link
+ A link to the specific location of physical data on a disk partition
+   Works even if original moved or removed
+   Cannot link directories
+   Cannot cross file-system boundaries
+ Symbolic link usually preferred over hard link
+
+
+
+
+                                                                        32
+Links: Special Files
+ ../ is a file that points to the previous directory
+ ./ is a file that points to the current working directory
+   Not symbolic or hard links
+   Special files created by OS
+ ~ is the current users home directory
+ ~{user} is the user's home directory
+   ~root = /root
+ Note: directory names have a / appended
+
+                                                             33
+HDD Naming Scheme
+ Hard drives are named in order they appear on the motherboard
+ Hard drive that found on the sata 0 port is named /dev/sda (sata
+ device a)
+ Hard drive that's found on the sata 1 port is named /dev/sdb (sata
+ device b)
+ Note: USB hard drives follow the same pattern
+
+
+
+
+                                                                      34
+Partition Names
+ Drives and partitions have names
+ The number that follows drive name is the partition number on the
+ drive
+   /dev/sda is whole SATA drive “a”
+   /dev/sda1 is 1st partition on sda
+   /dev/sda2 is 2nd partition on sda
+ Can be a gap between the partition numbers, due to how the drives
+ were partitioned
+ You can list all available drive and partitions using the following
+ command: [root@www~]# ls /dev/ | grep sd                              35
+Data Redundancy Considerations
+ If you were to design a system that held data critical to the
+ company how would you put in safeguards to establish data
+ integrity?
+   Would you span the data across multiple:
+      Files?
+      Folders?
+      Hard Drives?
+      Servers?
+
+
+                                                                 36
+What is RAID?
+ RAID (A redundant array of inexpensive/independent disks) is a
+ way to link multiple hard drives together to achieve a common goal
+ That goal may be for speed, redundancy, or integrity
+ There is generally 4 types of common RAID implementations in
+ order to achieve this
+   RAID 0
+   RAID 1
+   RAID 5
+   RAID 6
+                                                                      37
+RAID 0
+ RAID 0 is defined by a block-level striping without parity or
+ mirroring and has no redundancy
+ This form of RAID combines 2 or more drives then writes
+ alternatively to each
+   Write 1 goes on drive 1
+   Write 2 goes on drive 2
+   Write 3 goes on drive 1
+ This allows all the space on both drives to be accessible
+ If any of the disks fail then the entire data set is lost
+                                                                 38
+RAID 1
+ RAID 1 is defined by Mirroring without parity or striping.
+ This means that 2 or more drives are mirrored together
+ This means that you only get 1 hard drives worth of space but if
+ one of the set fails, the other can replace it
+ The drive with the least seek time plus rotational latency will
+ server read operations
+   The fasts drive will be read from
+ The data is written to all drives at the same time
+   The slowest drive determines write speed
+                                                                    39
+RAID 4
+ RAID 4 is defined by block-level striping with parity
+ This requires at least 3 drives and will give you the equivalent of 2
+ drives worth of space
+ The third drive will act as a parity device recovering data from any
+ lost drive in the array
+   This is computationally expensive to do
+ This can recover a single drive failure
+
+
+
+                                                                         40
+RAID 4 -XOR
+XOR Logic
+Input1 Input2 Input3 Output
+0     0      0      0
+0     0      1      1
+0     1      0      1
+0     1      1      0
+1     0      0      1
+1     0      1      0
+1     1      0      0
+1     1      1      1
+
+                              41
+RAID 4 (Continued)
+                     Block Disk0 Disk1 Disk2 Disk3 (parity)
+                     A     0000   0001   1010   1011
+                     B     1000   1001   1010   1011
+                     C     1001   1001   1011   1011
+                     D     1010   1001   1010   1001
+
+
+
+
+                                                              42
+RAID 4 - Recovery
+If Disk 2 Fails
+
+ Block Disk0 Disk1 Disk2 Disk3 (parity)
+ A       0000     0001   --     1011
+ B       1000     1001   --     1011
+ C       1001     1001   --     1011
+ D       1010     1001   --     1001
+
+Data is recoverable with XOR
+
+ Block Disk0 Disk1 Disk2 Disk3 (parity)
+ A       0000     0001   1010   1011
+ B       1000     1001   1010   1011
+ C       1001     1001   1011   1011
+ D       1010     1001   1010   1001
+                                          43
+RAID 5
+ RAID 5 is defined by block-level striping with distributed parity
+ amongst the drives
+ This requires at least 3 drives and will give you the equivalent of 2
+ drives worth of space
+ The third drive will act as a parity device recovering data from any
+ lost drive in the array
+   This is computationally expensive to do
+ This can recover a single drive failure
+
+
+                                                                         44
+RAID 5
+
+
+
+
+         45
+RAID 6
+ RAID 6 is defined by block-level striping with double distributed
+ parity amongst the drives
+ This type of RAID requires at least 4 drives and gives you the
+ equivalent data storage of n-2 drives worth of space
+   4 x 2TB in RAID 6 gives you 4TBs of space
+ Since the parity data is striped against all the drives it can suffer
+ from 2 drives failing before it completely fails
+   If a single drive fails the entire array will have reduced
+   performance
+   Often considered as the safest bet                                    46
+RAID 6
+
+
+
+
+         47
+

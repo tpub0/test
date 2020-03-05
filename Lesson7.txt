@@ -1,0 +1,246 @@
+Installing and Updating Software
+Objectives
+ Learn how to install software
+ Learn how package managers work
+ Learn about dependencies
+
+
+
+
+                                   2
+Installing Software
+ Historically in order to install software:
+   We would download the source code
+   Then depending on the type of code we would either:
+      C Code - Use a compiler like GCC (GNU C Compiler) to
+      compile the software into a usable application
+      BASH Script - store the file as an executable script
+ Now we usually use some kind of package manager or package
+ management system
+
+
+                                                              3
+Compiling
+ Source code has a manifest definition in the compiling
+ instructions which lists all dependencies and versions
+ If the compiler cannot find these dependencies then it cannot
+ continue to compile the software
+   In this case the operation will be aborted and stderr displays an
+   error message with what dependencies haven't been met
+
+
+
+
+                                                                       4
+Dependencies
+ A dependency is a software library used by the program
+ Why should we use dependencies?
+   Instead of everyone creating the same software over and over,
+   on developer creates a library and everyone can rely on it
+   This allows for software to be developed quicker and more
+   modularly so pieces and be replaced as needed
+ Example: MD5 hashing function can be quickly implemented using
+ an MD5 hashing library
+
+
+                                                                   5
+Dependencies - Scenario - Multiple Versions
+ App1 needs libfoo v1.2
+ App2 needs libfoo v1.3
+ When you have 2 different applications requiring the same library
+ but different versions there is an issue
+   You can either store 2 libraries, which can get messy
+   Upgrade the older application to the new library if you are the
+   developer
+
+
+
+                                                                     6
+Dependencies - Scenario - Nested Dependencies
+ Libfoo1.3 requires libgc1.33 and libC++1.67
+   libgc1.33 requires libBar1.99 and libLubar2.37
+     libLubar2.37 requires libnet1.2
+ Just imagine this could be nested hundreds of times with
+ thousands of dependencies especially when dealing with complex
+ applications
+   Imagine doing that manually?
+
+
+
+                                                                  7
+Dependencies - Scenario - Circular Dependencies
+ AppX v1 depends on app2
+   which depends on app3
+   which depends on app4
+   which depends on AppX v0
+ This is called circular dependencies
+ In order to solve this problem all versions have to be installed
+ simultaneously
+
+
+
+                                                                    8
+So how do we fix this?
+ We could keep track of version numbers and install versions side
+ by side as required
+
+OR
+
+ We could use a package management system!
+
+
+
+
+                                                                    9
+What is a Package?
+ Software Package is a collection of:
+   Scripts
+   Programs
+   Files
+   Directories
+   List of Dependencies
+ Programs are:
+   Executable files
+   Source code to be compiled
+                                        10
+Package Management Systems
+ A Package Management System is a set of utilities that allow for
+ package
+   Installation
+   Upgrading
+   Removal
+   Searching
+ All these procedures are done based on a local database
+ The local database is synced with remote repositories
+
+                                                                    11
+Repositories
+ A repository is a server that holds packages and package
+ information
+   They can be located on the internet
+   Hosted internally
+   Stored on the installation DVD
+ Each distribution has at least one centralized repository, with
+ packages tested and compiled for that specific distribution
+ Each distribution has different package delivery standards
+
+
+                                                                   12
+Repository Configuration FIles
+ A Repository configuration file will contain information about the
+ repository including:
+   Name
+   Location (URL)
+   Alternate locations (Mirror)
+ In CentOS the repository configuration files are in
+  /etc/yum.repos.d
+
+ Example:
+   CentOS-Base.repo
+                                                                      13
+Distribution Package Formats
+ *.rpm for Redhat Based Distros
+   Including CentOS
+   May Contain Source or Pre-Compiled Binaries
+ *.deb for Debian Based Distros
+   Ex. Debian, Ubuntu, MX Linux
+   Also may contain Source or Pre-Compiled Binaries
+ *.tgz/.tar.gz for Source Code compilation
+   Contains compressed version of the source code to be installed
+
+                                                                    14
+RedHat Package Manager (RPM)
+ RPM can
+   Install
+   Uninstall
+   Upgrade
+   Query and Verify RPM packages
+   Maintain a record of installed packages
+   Cannot automatically install dependencies
+   Does not communicate with the repository
+
+                                               15
+Command: rpm
+rpm [operation] [arguments]
+
+
+
+              Command                        Description
+rpm -q tmux                          Query for the tmux package
+rpm -qa                              Query every package
+rpm -ivh tmux-2.4.2.e17_x86_64.rpm   Install tmux from file
+rpm -ev tmux                         Removes the package tmux
+
+
+                                                                  16
+yum
+ YUM (Yellowdog Updater, Modified)
+   The front end manager for RPM packages
+   Installs package and dependencies when required
+   Manages software upgrades from a repository
+   Deals with managing all potential software from repositories
+
+
+
+
+                                                                  17
+Command: yum
+
+   Command                            Description
+yum list available   List all available packages
+yum list installed   List all installed packages
+yum list all         List all packages installed and available
+yum list kernel      List of installed and available kernel packages
+yum install tmux     Install tmux package
+yum search tmux      Search for tmux package
+yum provides tmux    Find packages that provide the tmux file
+yum info tmux        Provide info on the tmux package                  18
+Why ever use RPM?
+ Software packages maintained in server repositories are generally
+ old and thoroughly tested, therefore considered stable
+ Sometimes you'll want a newer version of software for the latest
+ features
+ In that case you'll have to download the latest version manually
+ and install it using rpm
+   Keep in mind this means you are dealing with dependencies
+
+
+
+
+                                                                     19
+RPM Package Information
+ nano-2.2.6-1.i386.rpm
+   This states that the package name is nano
+   It is version 2.2.6
+   -1 is the release
+     A release is backports of security fixes
+   It has been compiled for the i386 platform
+ What is i386?
+   i386,i486,i586,i686 are the codenames for 32 Bit processors
+   amd64 is the codename for 64 Bit processors
+                                                                 20
+Additional Repos
+ It is possible to add additional repositories
+   However keep in mind you have to make sure you trust the
+   repository as they are sending you software
+      Imagine your repositories could have data miners or other
+      malicious software in them
+ One of the common extra repos to install is epel
+   https://fedoraproject.org/wiki/EPEL
+
+
+
+                                                                  21
+Other Package Types
+ FlatPak - Developed by Redhat
+   https://flatpak.org/
+ Snap Packages - Developed by Canonical (Ubuntu)
+   https://snapcraft.io/
+ AppImage - Community Created
+   https://appimage.org/
+
+
+
+
+                                                   22
+

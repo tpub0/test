@@ -1,0 +1,457 @@
+Basic Commands
+Objectives
+ Unix Philosophy
+ Why use the CLI
+ Basic Terminology
+ Understanding the man pages
+ Redirectory Output
+ Chaining and Piping
+
+
+
+
+                               2
+Unix Philosophy
+ The 2 most important philosphies are:
+   Everything is a file
+     including processes (more on this in a later lesson see /proc)
+   Each program should exist for a single purpose and should
+   perform that purpose well
+     programs should work together to complete a task
+
+
+
+
+                                                                      3
+Why use the CLI?
+ Recall from the introduction lecture we talked about CLI being
+ more efficient, let look at it from a couple perspectives
+ First how much data does it require to remotely control a full
+ desktop over the internet?
+   Let's take a look at NoMachine for example on average it
+   requires about 128 Kb/s at a pretty consistant rate
+ For a command line only connection:
+   Let's take a look at SSH to on average it requires a stead stream
+   of about 1 Kb/s, with burst peaks with large transmissions (for
+   example running a command with large output)
+                                                                       4
+Why use the CLI? (Continued)
+ Another good reason to use the CLI is completing tasks efficiently
+ Remember creating user accounts in Windows?
+    This look several steps in a GUI
+    How long would it take to create 100 accounts?
+ On Linux to create a user the task can be completed in a couple
+ lines (potentially a single line)
+
+useradd franco
+echo password | passwd franco -e --stdin
+
+
+
+ Imagine how easy scripting this would be?                            5
+Why use the CLI? (Continued)
+ Have you ever had to find a specific line in a group of configuration
+ files?
+ With a GUI you would have to go through each file one by one until
+ you found it
+ With CLI you can use a command and check across multiple files
+ and folders
+
+grep -R searchString ./*
+
+
+
+ The command above will search all files in the current directory for
+ searchString                                                         6
+Basic Terminology
+ #! is called a Shebang
+ ~ is called a tilde
+ | is called a pipe
+ - is called a tack or minus
+ ` is called a backtick (the lower case of the ~ beside 1)
+
+
+
+
+                                                             7
+CLI Prompt Breakdown
+[root@localhost ~]# ls
+
+
+
+ root is the user
+ localhost is the hostname of the machine
+ ~ is the directory
+    in Linux ~ means the home folder of the current user, stored in
+    the $HOME environment variable
+    For root the home directory is /root
+    For a regular user it would be in /home/ {username}
+                                                                      8
+CLI Prompt Breakdown
+[root@localhost ~]# ls
+
+
+
+ # indicates the end of the CLI prompt (# for root, $ for a user)
+    recall in your networking classes:
+       in privilaged exec mode the prompt ended in a #
+       in user exec mode the prompt ended in a >
+ ls is the command being run
+ Please note this can be changed and edited using the global
+ variable $PS1 (more on this in Linux II)
+                                                                    9
+CLI Help Syntax
+ The following special characters are used to define the command
+ syntax
+
+Char Description
+       Identifies an optional argument. Arguments not enclosed in brackets are
+ []
+       required.
+ ...   Indicates that you can specify multiple values for the previous argument.
+       Indicates mutually exclusive information. You can use the argument to the
+ |     left of the separator or the argument to the right of the separator. You
+       cannot use both arguments in a single use of the command.
+       Delimits a set of mutually exclusive arguments when one of the arguments is
+ {}
+       required. If the arguments are optional, they are enclosed in brackets ([ ]).
+                                                                                       10
+What are the man pages?
+  The man pages short for manual pages are the help pages for the
+  Linux CLI.
+
+You can use the man pages by:
+
+[root@localhost ~]# man ls
+
+
+
+  In this case ls is the command we are looking up
+
+To get a short verion of help information you can run:
+
+[root@localhost ~]# ls --help                                       11
+What are the man pages? (Continued)
+You can also look up configuration files:
+
+[root@localhost ~]# man fstab
+
+
+
+  In this case you are looking the format of /etc/fstab
+  Most packages come with man pages for their configuration files,
+  just remember to look up the man page with the default name of
+  the configuration file
+
+
+
+                                                                     12
+Common Basic Commands
+Take a look at the list available for GNU Core Utilities
+
+https://en.wikipedia.org/wiki/List_of_GNU_Core_Utilities_commands
+
+Do you recognize any of these commands?
+
+Let's go through the ones you'll need the most.
+
+
+
+
+                                                                    13
+Command: pwd and cd
+Format: pwd [options]
+Format: cd directory
+
+   Command                           Description
+ pwd               Display the current working directory
+                   Change directory to dir, located in current
+ cd dir
+                   working directory
+ cd ../            Change directory to parent directory
+ cd /home/franco   Change directory to /home/franco
+                                                                 14
+Command: ls
+Format: ls [options] [directory]
+
+Command                                  Description
+ ls       List all contents of the directory in alphabetical order
+          List all contents of the directory in list format with additional details in
+ ls -l
+          alphabetical order
+          List all contents of the directory including hidden files in list format
+ ls -la
+          with additional details in alphabetical order
+          List all contents of the directory in list format with additional details
+ ls -lh
+          with file size in a human readable format
+
+
+
+                                                                                         15
+Command: cat
+Format: cat [options] [file]
+
+         Command                        Description
+ cat file.txt           Display the text contents of file.txt
+ cat file.txt           Display the text contents of file.txt and
+ file2.txt              concatenate the contents of file2.txt
+                        Display and concatenate the text contents
+ cat *
+                        of all files in the current working directory
+
+
+                                                                        16
+Command: echo
+Format: echo [options] [string]
+
+       Command                         Description
+ echo hello             Display the word 'hello' to the terminal
+                        Display the variable $HOME to the
+ echo $HOME
+                        terminal
+                        Display the word 'hello' without a new line
+ echo -n hello
+                        to the terminal
+
+
+                                                                      17
+Command: cp
+Format: cp [options] [dir]source [dir]destination
+
+       Command                                     Description
+ cp file.txt file2.txt     Copies file.txt to file2.txt
+ cp file.txt
+ /home/franco
+                           Copies file.txt to /home/franco
+
+                           Copies the directory dir to /home/franco/ creating the
+ cp -r dir /home/franco/
+                           directory /home/franco/dir
+                           If /home/franco/dir2 exists copy dir to
+ cp -r dir                 /home/franco/dir2/dir.
+ /home/franco/dir2         If /home/franco/dir2 does not exist then copy dir to
+                           /home/franco/dir2
+
+                                                                                    18
+Command: mv
+Format: mv [options] [dir]source [dir]destination
+
+       Command                                    Description
+ mv file.txt file2.txt       Moves (or renames) file.txt to file2.txt
+ mv file.txt /home/franco/   Moves file.txt to /home/franco/file.txt
+ mv file.txt                 Moves (and renames) file.txt to
+ /home/franco/file2.txt      /home/franco/file2.txt
+                             If /home/franco exists moves dir to
+                             /home/franco/dir.
+ mv dir /home/franco/
+                             If /home/franco does not exist then moves dir to
+                             /home/franco
+
+                                                                                19
+Command: rm
+Format: rm [options] [file]
+
+       Command                             Description
+ rm file.txt             Delete file.txt
+                         Delete the directory /home/franco and all
+                         of its contents.
+ rm -rf /home/franco
+                         r= recursively
+                         f=forcefully
+                         Delete the contents of /home/franco but
+ rm -rf /home/franco/*
+                         not the directory itself.
+                                                                     20
+Command: rmdir
+Format: rmdir [options] directory
+
+       Command                            Description
+                           Delete dir directory in the current
+ rmdir dir
+                           working directory, dir must be empty
+ rmdir                     Delete /home/franco/dir,
+ /home/franco/dir          /home/franco/dir must be empty.
+
+Note: There is no recycle bin, so be careful!
+
+                                                                  21
+Command: grep
+Format: grep [options] pattern [file]
+
+       Command                           Description
+                         Display lines with the string '80' in
+ grep 80 httpd.conf
+                         httpd.conf
+                         Display lines without the string '80' in
+ grep -v 80 httpd.conf
+                         httpd.conf
+                         Display lines with the string '80' and
+ grep -n 80 httpd.conf
+                         include the line number from httpd.conf
+
+                                                                    22
+Command: head
+Format: head [options] [file]
+
+     Command                           Description
+ head file.txt         Display the first 10 lines of file.txt
+ head -n 2 file.txt    Display the first 2 lines of file.txt
+ head -2 file.txt      Display the first 2 lines of file.txt
+ head -n -2 file.txt   Display all except the last 2 lines of file.txt
+
+
+
+                                                                         23
+Command: tail
+Format: head [options] [file]
+
+      Command                                    Description
+ tail file.txt         Display the last 10 lines of file.txt
+ tail -n 2 file.txt    Display the last 2 lines of file.txt
+ tail -2 file.txt      Display the last 2 lines of file.txt
+ tail -n +2 file.txt   Display all lines including line 2 and forward of file.txt
+                       Listen to file changes and display an on going feed of
+ tail -f file.txt
+                       file.txt. This is very useful for displaying live log files
+
+
+
+
+                                                                                     24
+Command: sort
+Format: sort [options] [file]
+
+       Command                         Description
+ sort file.txt          Output file.txt in alphabetical order
+ sort -n file.txt       Output file.txt in numerical order
+                        Output file.txt in alphabetical order
+ sort -f file.txt
+                        ignoring case
+                        Output file.txt in numerical order sorting
+ sort -h file.txt       by human readable size values like 2G or
+                        5K                                           25
+Command: more and less
+Format: more [options] [file]
+Format: less [options] [file]
+
+     Command                          Description
+                    Display the contents of file.txt and scroll
+ more file.txt
+                    forward with spacebar (can't scroll backward)
+                    Display the contents of file.txt and scroll with
+ less file.txt      spacebar or arrow keys (scrolling forward and
+                    backward are possible).
+ less -R file.txt   Allows for colour formatting in less
+                                                                       26
+STDIN
+ By default is attached to the keyboard
+ Data (usually text) supplied to a program from either the keyboard
+ or through a file
+   A command in linux wants some kind of input
+      cat [file]   (file is optional and input can be taken from
+     STDIN)
+   Not all commands require input like ls
+ Standard input can be redirected through the use of arguments and
+ redirection operators so that it becomes a source other than the
+ keyboard                                                          27
+STDOUT
+ By default is attached to the terminal which is diplayed to your
+ monitor
+ Standard output is the stream where a program writes its output
+ data.
+ Most programs do not give you output based on successful
+ completion
+   Ex. mv
+   A majority of programs can have the option for verboseness
+   turned on
+      mv -v [source] [destination]
+                                                                    28
+STDERR
+ Standard error is another output stream typically used by
+ programs to output error messages or diagnostics.
+ It is a stream independent of standard output and can be
+ redirected separately.
+ This comes in handy when chaining commands together.
+ By default is sent to STDOUT to be displayed to the terminal
+
+
+
+
+                                                                29
+Redirection
+ A Linux shell, such as BASH, receives input and sends output as
+ sequences or streams of characters.
+ You may wish to redirect stdin, stdout or stderr to something other
+ than their defaults.
+ By using special operators {< | > | >> | 2>} we can manipulate the
+ defaults of stdin stdout & stderr.
+ Common use example: One can take the stdout and redirect it to
+ stdin on the next program.
+ You can redirect output to /dev/null to have output ignored
+
+                                                                       30
+Redirection Examples
+
+       Command                         Description
+                        Write hello to the file ex.txt, if ex.txt
+ echo hello > ex.txt
+                        exists overwrite ex.txt
+                        Write hello to the file ex.txt, if ex.txt
+ echo hello >> ex.txt
+                        exists append to ex.txt
+ cat < ex.txt           Have STDIN for cat be read from ex.txt
+ ping google.ca 2>      Redirect STDERR (error messages) to
+ error.log              error.log
+
+                                                                    31
+Chaining Commands
+ What if you wanted to run a command and when it finished, run
+ another?
+ What if you wanted to connect the output of one command to the
+ input of another?
+ What if you wanted to run commands depending on success or
+ failure of a previous command?
+
+
+
+
+                                                                  32
+Chaining Commands (Continued)
+    Linux provides many ways to chain commands together. The ones we will discuss:
+
+Operator       Name                             Description
+                         Redirect output from the first command (on the left) to the
+|            Pipe
+                         second command (on the left)
+                         Always from the command on the right after the command
+;            Semicolon
+                         on the left
+&            Ampersand Run the command in the background.
+                         If the command on the left is unsuccessful run the
+||           OR
+                         command on the right.
+                         If the command on the left is successful run the command
+&&           AND
+                         on the right
+                                                                                       33
+Chaining Command Examples
+       Command                                    Description
+                            Create tmp directory, ignoring success or failure
+mkdir tmp; cd tmp; ls
+                            change directory and run ls
+                            Create tmp directory, if successful change directory, if
+mkdir tmp && cd tmp && ls
+                            successful run ls
+                            Change directory to tmp, if unsuccessful create the
+cd tmp || mkdir tmp
+                            directory tmp
+                            Display the contents test.txt, redirect the output to
+cat test.txt | head
+                            head, which will display the first 5 lines
+                            Run ping in the background, use the fg command to
+                            bring the command back to the foreground.
+ping google.ca &
+                            The output will still be displayed in the terminal even
+                            though the command is in the background.                   34
+

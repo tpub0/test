@@ -1,0 +1,381 @@
+The BASH Shell
+Objectives
+ Learn about the BASH shell
+ Learn of other shells
+ Learn how to use the BASH shell effectively for scripting
+ Learn about BASH shell variables
+ Learn systemd basics
+
+
+
+
+                                                             2
+What is a Shell?
+ A shell is a command-line interpreter
+   It is an interpretive language like JavaScript
+ Users direct the operation of a computer by issuing commands
+ Files can also contain commands and be interpreted these are
+ called Scripts
+
+
+
+
+                                                                3
+Why is a shell so importatnt?
+ Everything in Linux is tied directly to the shell
+ Desktop environments are referenced as graphical shells
+   The GUI provides a front end and drawing potential for shell
+   commands
+      Ex: Firefox is actually the command firefox
+
+
+
+
+                                                                  4
+The BASH Shell
+ The BASH shell is an interactive shell that includes:
+   commands to manipulates files/directories
+   commands to run programs
+   conditional statements
+   other scripting features
+ To use the BASH shell you can type commands
+ You can also place the commands in a BASH script and run the
+ script
+
+                                                                5
+BASH Variables
+ Variables are defined by the name followed by an =
+    Note there cannot be a space before the equals
+ All variables are accessed with $ followed by the name of the
+ variable
+
+var="Example"
+
+echo $var
+
+
+
+
+                                                                 6
+BASH Build in Variables
+ PATH - the path variable is used to describe where the shell can
+ find executable programs (denoted by file permissions)
+ IFS - defines the internal field separator, by default any whitespace
+ PWD - current working directory
+ USER - current user
+ HOME - current user's home directory
+ More info:
+ https://www.tldp.org/LDP/abs/html/internalvariables.html
+
+
+                                                                         7
+BASH Positional Parameters
+ $0 - stores the script name
+ $1 - $9 - stores the first 8 arguments passed into the script
+ $? - stores the exit code of the last program run
+ $@ - all the arguments passed in, space separated and quoted
+ $* - all the arguments passed in as a single word
+ $# - the number of arguments passed in
+ $$ - the PID of the script
+
+
+
+                                                                 8
+The IFS variable and Spaces
+ By default spaces are part of the IFS variable meaning they are
+ used to separate commands and command arguments
+ What if you need to include a space in an argument?
+    mkdir My Documents   - will create 2 directories My and
+   Documents
+ To include the space as part of the parameter you have a few
+ options
+   Escape using \ mkdir My\ Documents
+   Quote with " mkdir "My Documents"
+   Quote with ' mkdir 'My Documents'                               9
+Quoting in BASH
+What's the difference between ' and "?
+
+  In BASH anything quoted in the single quote will be taken literally
+     echo '$PATH'   will output $PATH
+  While quoting with double quotes, BASH will parse the quoted
+  string for escaped charaters like variables and replace them
+     echo "$USER"   will output root
+
+
+
+
+                                                                        10
+Wildcard Expansion
+ BASH supports the use of wildcards when refering to files and
+ directories
+ For example:
+    ls *.*    will show every file with an extension
+    cat *    will cat every file in the current directory
+     Equivalent would be cat file1.txt file2.txt ... filen.txt
+    cat /home/*/public_html/index.html      - display everyone's
+   index.html
+
+
+                                                                   11
+Brace Expansion
+ Creating a list of items you can use brace expansion
+    echo {1..10}   outputs 1 2 3 4 5 6 7 8 9 10
+ You can also attach the expansion to items
+    mkdir Output{1..3}    creates Output1, Output2, Output3
+ You can also create comma separated lists
+    cat file{.log,.err}   cats file.log and file.err
+ You can also have an empty element
+    mv file{,.txt}   is the same as mv file file.txt
+
+                                                              12
+Conditional Statements
+ The if statement checks for the successful execution of the last
+ command
+ if statements must end with fi
+
+if {command}; then
+        {run if true}
+fi
+
+
+
+if ping -c 1 google.ca; then
+        elinks google.ca
+fi
+
+                                                                    13
+Conditional Statements
+  If statements also support else and else if
+
+if ping -c 1 google.ca; then
+        elinks google.ca
+else
+        echo "Can't reach google"
+fi
+
+
+
+if ping -c 1 google.ca; then
+        elinks google.ca
+elif ping -c 1 bing.com; then
+        elinks bing.com
+else
+        echo "Can't reach google or bing"
+fi
+                                                14
+backticks `
+  In BASH if you want the output of command to be used you can use
+  the backticks
+
+#!/bin/bash
+
+files=`ls`
+echo $files
+
+
+
+  Alternatively you can use $() around your command
+
+#!/bin/bash
+
+files=$(ls)
+echo $files
+                                                                     15
+BASH: read
+#!/bin/bash
+
+read input
+echo $input
+
+
+
+
+ $input is a variable containing a line of text
+ this is taken from standard input (which can be redirected)
+ then outputs the line taken in form input
+
+
+
+                                                               16
+Conditional Statements
+ In order to run logical checks we use a command called test
+     man test   for details
+ Alternatively the command is called [ which must have ] as the
+ last argument
+    The square bracket command was created to mirror other
+    languages
+
+if [ $1 -gt 5 ]; then
+        echo "$1 is greater than 5";
+fi
+
+
+                                                                  17
+Looping
+BASH supports 3 types of loops:
+
+  for in loop
+  while loop
+  for loop
+
+
+
+
+                                  18
+BASH loop: for in
+#!/bin/bash
+
+for i in `ls`; do
+   echo $i
+done
+
+
+
+
+ i is the variable
+ Through each iteration of the for loop the contents of the output
+ from ls is assigned to the variable i
+
+
+                                                                     19
+BASH loop: while
+#!/bin/bash
+
+while read line; do
+   echo $line
+done < input.txt
+
+
+
+ In the example above we are reading input.txt one line at a time
+ stored in $line
+ This will continue until read returns an exit code that's not 0
+
+
+
+                                                                    20
+BASH loop: for
+#!/bin/bash
+
+for (( i=0; i<10; i++ )); do
+   echo "Iteration $i"
+done
+
+
+
+ This is a C style for loop
+ i is the variable
+ i is set, a condition is chosen, and an iteration is set
+
+
+
+                                                            21
+BASH: functions
+ Functions must be defined before they are run
+ Unlike other languages BASH does not require round brackets
+
+#!/bin/bash
+
+function firstFun() {
+   echo "Hello World!"
+}
+
+firstFun
+
+
+
+
+                                                               22
+BASH: functions (continued)
+ Functions can have parameters that are accessed with the
+ positional variables
+
+#!/bin/bash
+
+function funArg() {
+   echo $1
+}
+
+funArg test
+
+
+
+
+                                                            23
+Script Execution
+ All scripts have to use an interpreter
+ The interpreter should be specified on the first line of the script
+   The first line should start with the shebang #!
+      #!/bin/bash
+
+      #!/bin/python
+
+      #!/bin/node
+
+      #!/bin/zsh
+
+      #!/bin/csh
+
+
+                                                                       24
+Script Execution (continued)
+ Scripts are just text files however they have to be executable
+   More on this in the permissions lecture
+ First create the script using vi
+ Once you've created the file you add executable to the file with
+  chmod u+x script
+
+ Now to run the script use the full path of the script
+    /home/franco/bin/script.sh
+
+    ./script.sh   - remember ./ is the current directory
+
+                                                                    25
+When should we script things?
+ Anytime a task must be repeated
+ Sometimes you'll need a script to start or stop a service correctly
+ (especially if you aren't using systemd)
+ Anytime you are likely to forget a complex set of arguments to
+ commands
+   For example: renewing certificates with let's encrypt
+
+
+
+
+                                                                       26
+What is systemd?
+ Recall from our first lecture systemd is an init system which run at
+ PID 1
+ It starts all other services
+ Historically this was managed by SysVinit
+   With SysVinit you would need to create service scripts to
+   manage your services
+ systemd has much simpiler configuration files
+   These can be found in /lib/systemd/system
+
+
+                                                                        27
+systemd commands
+ systemctl start service    - start a service
+ systemctl enable service   - enable service to start at system
+ startup (creates a symlink from /lib/systemd/system to
+ /etc/systemd/system)
+ systemctl status service    - check the service status
+ systemctl restart service    - stop then start the service
+ systemctl reload service    - if supported reload the service with
+ new configuration files
+ systemctl stop service    - stop a service
+ systemctl disable service    - disable service at startup            28
+systemd target
+systemd services have targets, depending one when you wish the
+service to start
+
+  poweroff.target - when the computer is turned off
+  rescue.target - a recovery mode where you can get access to a root
+  terminal without a password
+  multi-user.target - non graphical multi-user shell is available
+  graphical.target - graphical multi-user shell is available
+  reboot.target - when the machine reboots
+
+                                                                       29
+

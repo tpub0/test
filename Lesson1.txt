@@ -1,0 +1,260 @@
+Introduction into Linux
+Objectives
+ Learn how to properly install Linux
+ Understand why we would want to use Linux
+ Understanding the GRUB boot loader
+ Using BASH for Windows
+ Termux for Android
+
+
+
+
+                                             2
+What is Linux?
+ Linux is an open source free operating system based on Unix
+ It was first developed by Linus Torvalds in 1991
+ It is commonly used as a server operating system
+ Most distributions come packaged with GNU tools, which are a set
+ of open source productivity tools
+
+
+
+
+                                                                    3
+Why use Linux?
+ Linux is very stable
+ It is free
+ It is open source meaning anyone can modify Linux
+ It is maintained by a large community
+ Very few system resources are required to properly operate most
+ Linux distributions
+ A GUI is not required to run a stable full featured Linux server
+ (something Windows server is finally pushing towards)
+
+
+                                                                    4
+Do people really use Linux?
+YES!
+
+ It is used in many devices around the world
+   Linux/Unix based operating systems make up about 70% of the
+   Web Servers in the world
+   Since Android also uses the Linux kernel it is also a popular
+   mobile operating system
+   Many networking devices are unix based
+   A lot of small specialized devices are unix based (eg. GPSs, TVs)
+   The top 500 super computers are running Linux
+                                                                       5
+Distributions
+ A Linux Distribution is a collection of software packages including
+ a package manager, combined with the Linux Kernel to be an
+ Operating System
+ Most of the Distributions are based on the following Linux
+ distributions
+   Debian
+   Slackware
+   Red Hat
+   Arch
+   Gentoo                                                              6
+What distributions have you heard of?
+https://upload.wikimedia.org/wikipedia/commons/1/1b/Linux_Dis
+tribution_Timeline.svg
+
+
+
+
+                                                                7
+Which distribution will we be using?
+ CentOS
+ CentOS is based on Red Hat Linux
+   It also uses all the Red Hat repositories
+   It removes all Red Hat branding
+   It does not offer paid support like Red Hat
+
+
+
+
+                                                 8
+Planning a Linux Installation
+ Choosing your installation media:
+ https://www.centos.org/download/
+   DVD ISO: Most common software available at installation
+   Everything ISO: Meant for system admins who wish to install
+   additional packages without downloading using the package
+   manager for additional control
+   Minimal ISO: Installs the bare minimum for your OS (Using in our
+   labs)
+ Should you upgrade or clean install?
+   When doing a major version change its best to do a clean install   9
+Planning a Linux Installation
+ How would we install to bare metal?
+   Create install media using YUMI or UUI (Windows)
+      https://www.pendrivelinux.com/yumi-multiboot-usb-creator/
+   Startup Disk Creator (Linux)
+   Create a CD or DVD of the ISO
+   Net Install using a PXE (Preboot Execution Environment) Server
+ Installing to a virtual machine is a matter of mounting the ISO as a
+ CD drive
+
+                                                                        10
+CentOS System requirements
+ In a Virtual Machine:
+   15 GB of HDD
+   1 GB of RAM
+   1 vCPU core
+ Bare Metal:
+   15GB of HDD
+   2 GB of RAM
+   1 core CPU
+
+                             11
+What filesystems have you heard of?
+
+
+
+
+                                      12
+Hard drive setup
+ The latest versions of Linux use the ext4 filesystem, xfs filesystem
+ or zfs filesystem
+ Partitions
+   We need a root partition that will be mounted at /
+   We are also going to separate our /boot partition
+      /boot is where our boot configuration is stored
+   We will also need a swap partition
+
+
+
+                                                                        13
+Recommended Partitions
+ Recommended Scheme is to separate partition for each of the
+ following
+   /var
+   /home
+   /boot
+   /tmp
+   swap
+ We'll learn more about each of these folders later
+
+                                                               14
+What is a swap partition?
+ Swap is similar to Windows page file
+ It is used if there is an additional need for RAM
+ It is also used if there is information in RAM that is hardly ever
+ used to free up additional space
+ However you should consider swap like car insurance, you need to
+ have it but you never want to use it
+ Swap should be 1.5-2 times the size of your RAM
+
+
+
+                                                                      15
+How does Linux boot?
+ GRUB = Grand Unified Bootloader
+ Grub works in 3 stages
+   Storing boot.img in the MBR at sector 0, this is configured to
+   load core.img
+   The core.img is stored in sector 1-62, since they are always
+   empty. Once executed core.img will load its configuration file
+   and other modules needed such as system drivers
+   The final stage is loading the configuration from /boot/grub
+
+
+                                                                    16
+How does Linux boot? (Continued)
+ While in GRUB you can hit the e key to enter additional parameters
+ like kernel flags or different init program (more on this in the
+ future)
+ You can also select previous kernel versions in cases where there
+ are stability issues with newer kernals
+ In the event your boot ever gets corrupted you can use a tool called
+ Super Grub Disk to boot any OS on your hard drives
+   https://www.supergrubdisk.org/
+
+
+                                                                        17
+What is an init system?
+ Linux can have daemons or services that start at system startup
+ When a Linux system is started the first process that is run is run
+ under process id (pid) 1 and that process is the init system
+ Depending on the init system, daemons will be started sequentially
+ or in parallel and with various options
+ Common init systems include:
+   systemd (most common on modern systems)
+   sysVinit (oldest and most stable)
+   runit
+   OpenRC                                                              18
+How does the Linux GUI work?
+ Linux uses an X11 server to draw and display windows, this is
+ historically based on having one Linux hosting multiple terminals
+ and one server
+ In the future X11 could be changed to wayland as some
+ distributions have already adopted wayland
+ X11 also allows you to transmit windows over remote connections
+ without sharing your whole desktop
+
+
+
+
+                                                                     19
+Do we need to use a GUI in Linux?
+NO!
+
+ We won't be using a GUI in lab
+ Why not you might ask?
+      Once you get used to command line its far more efficient for
+      server management, especially remote management
+      If you run a GUI then there is additional unnecessary software
+      that could potentially have errors
+
+
+
+                                                                       20
+Linux on your Laptop or Desktop
+ Are you ready to dive into Linux and try it on your computer
+ If you are then I wouldn't recommend CentOS for your desktop,
+ instead I would recommend MX Linux
+   https://mxlinux.org/
+   MX Linux is a very user friendly and stable desktop distribution
+   It is debian based
+ The reason we aren't using MX Linux in lab is because it is designed
+ to be a Desktop Operating System and comes with additional
+ software we don't need on a server
+                                                                        21
+Using a Linux Terminal on Windows with MSYS2
+ Linux terminal for windows with MSYS2
+   https://www.msys2.org/
+ The package manager for MSYS2 is pacman. Usage samples:
+   Install: pacman -S <package name>
+   Upgrading: pacman -Syuu
+   Searching for packages: pacman-Ss <name pattern>
+
+
+
+
+                                                           22
+Using a Linux Terminal on Windows with MSYS2
+ Documentation: https://github.com/msys2/msys2/wiki
+ MSYS2 Usage examples:
+   grep
+   vim
+   ssh
+ MSYS2 Usage windows command:
+   *WMIC PATH Win32_Battery Get EstimatedChargeRemaining *
+
+
+
+                                                             23
+Installing an X11 Server on Windows
+ XWindows for windows - XMING:
+ https://sourceforge.net/projects/xming/
+   X Window System - is the Unix windowing system, it provides a
+   framework for a GUI environment
+   It allows for drawing and moving windows as well as interacting
+   with mouse, keyboard and a display device
+ Once XMING is installed one Windows you can use GUI
+ applications remotely through SSH
+
+
+                                                                     24
+
